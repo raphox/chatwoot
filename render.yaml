@@ -21,6 +21,11 @@ services:
         value: none
       - key: FRONTEND_URL
         value: https://CHANGE.herokuapp.com
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: chatwoot-redis
+          property: connectionString
 
   - type: redis
     name: chatwoot-redis
