@@ -1,0 +1,60 @@
+services:
+  - type: web
+    name: chatwoot
+    plan: free
+    env: ruby
+    buildCommand: bundle install; bundle exec rake assets:precompile; bundle exec rake assets:clean;
+    startCommand: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
+    healthCheckPath: /
+    envVars:
+      - key: SECRET_TOKEN
+        generateValue: true
+      - key: NODE_ENV
+        value: production
+      - key: RACK_ENV
+        value: production
+      - key: RAILS_ENV
+        value: production
+      - key: INSTALLATION_ENV
+        value: docker
+      - key: REDIS_OPENSSL_VERIFY_MODE
+        value: none
+      - key: FRONTEND_URL
+        value: https://CHANGE.herokuapp.com
+
+  - type: redis
+    name: chatwoot-redis
+    plan: free
+    region: ohio
+    maxmemoryPolicy: noeviction
+    ipAllowList: []
+
+  - type: worker
+    name: chatwoot-sidekiq
+    plan: starter
+    env: ruby
+    region: ohio
+    buildCommand: bundle install
+    startCommand: bundle exec sidekiq -C config/sidekiq.yml
+    envVars:
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: NODE_ENV
+        value: production
+      - key: RACK_ENV
+        value: production
+      - key: RAILS_ENV
+        value: production
+      - key: INSTALLATION_ENV
+        value: docker
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: chatwoot-redis
+          property: connectionString
+
+databases:
+  - name: chatwoot-db
+    plan: free
+    databaseName: chatwoot_prod
+    user: chatwoot
