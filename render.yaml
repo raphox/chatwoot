@@ -7,7 +7,7 @@ services:
     startCommand: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
     healthCheckPath: /
     envVars:
-      - key: SECRET_TOKEN
+      - key: SECRET_KEY_BASE
         generateValue: true
       - key: NODE_ENV
         value: production
