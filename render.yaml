@@ -3,7 +3,7 @@ services:
     name: chatwoot
     plan: free
     env: ruby
-    buildCommand: bundle install; bundle exec rake assets:precompile; bundle exec rake assets:clean;
+    buildCommand: bundle install; bundle exec rake assets:precompile; bundle exec rake assets:clean; bundle exec rails db:chatwoot_prepare
     startCommand: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
     healthCheckPath: /
     envVars:
