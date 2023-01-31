@@ -25,7 +25,6 @@ services:
   - type: redis
     name: chatwoot-redis
     plan: free
-    region: ohio
     maxmemoryPolicy: noeviction
     ipAllowList: []
 
@@ -33,7 +32,6 @@ services:
     name: chatwoot-sidekiq
     plan: starter
     env: ruby
-    region: ohio
     buildCommand: bundle install
     startCommand: bundle exec sidekiq -C config/sidekiq.yml
     envVars:
